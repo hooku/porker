@@ -1,0 +1,12 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="porker.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="PK_DEBUG_PASS" Type="System.String" Scope="User">
+      <Value Profile="(Default)">zhongbao123</Value>
+    </Setting>
+    <Setting Name="PK_DEBUG_USER" Type="System.String" Scope="User">
+      <Value Profile="(Default)">15884156797</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
