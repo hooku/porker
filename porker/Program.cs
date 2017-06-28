@@ -63,6 +63,8 @@ namespace porker
             // NTP message size - 16 bytes of the digest (RFC 2030)
             var ntpData = new byte[48];
 
+            var networkDateTime = (new DateTime(1900, 1, 1, 0, 0, 0, DateTimeKind.Utc));
+
             //Setting the Leap Indicator, Version Number and Mode values
             ntpData[0] = 0x1B; //LI = 0 (no warning), VN = 3 (IPv4 only), Mode = 3 (Client Mode)
 
@@ -78,9 +80,16 @@ namespace porker
             //Stops code hang if NTP is blocked
             socket.ReceiveTimeout = 3000;
 
-            socket.Send(ntpData);
-            socket.Receive(ntpData);
-            socket.Close();
+            try
+            {
+                socket.Send(ntpData);
+                socket.Receive(ntpData);
+                socket.Close();
+            }
+            catch (Exception ex)
+            {
+                return networkDateTime;
+            }
 
             //Offset to get to the "Transmit Timestamp" field (time at which the reply 
             //departed the server for the client, in 64-bit timestamp format."
@@ -99,7 +108,7 @@ namespace porker
             var milliseconds = (intPart * 1000) + ((fractPart * 1000) / 0x100000000L);
 
             //**UTC** time
-            var networkDateTime = (new DateTime(1900, 1, 1, 0, 0, 0, DateTimeKind.Utc)).AddMilliseconds((long)milliseconds);
+           networkDateTime.AddMilliseconds((long)milliseconds);
 
             return networkDateTime;
         }
@@ -116,18 +125,24 @@ namespace porker
         static void update_time()
         {
             DateTime ntp_time = GetNetworkTime();
+            if (ntp_time.Year == 1900)
+            {
+                MessageBox.Show(Properties.Resources.PK_STR_LOG_SYNCERR);
+            }
+            else
+            {
+                SYSTEMTIME st = new SYSTEMTIME();
+                st.wYear = (ushort)ntp_time.Year;
+                st.wMonth = (ushort)ntp_time.Month;
+                st.wDay = (ushort)ntp_time.Day;
+                st.wHour = (ushort)ntp_time.Hour;
+                st.wMinute = (ushort)ntp_time.Minute;
+                st.wSecond = (ushort)ntp_time.Second;
 
-            SYSTEMTIME st = new SYSTEMTIME();
-            st.wYear = (ushort)ntp_time.Year;
-            st.wMonth = (ushort)ntp_time.Month;
-            st.wDay = (ushort)ntp_time.Day;
-            st.wHour = (ushort)ntp_time.Hour;
-            st.wMinute = (ushort)ntp_time.Minute;
-            st.wSecond = (ushort)ntp_time.Second;
+                SetSystemTime(ref st);
 
-            SetSystemTime(ref st);
-
-            MessageBox.Show(Properties.Resources.PK_STR_LOG_SYNCOK);
+                MessageBox.Show(Properties.Resources.PK_STR_LOG_SYNCOK);
+            }
         }
 
         static void update_app()

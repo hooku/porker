@@ -129,7 +129,7 @@
   <data name="PK_STR_URL_UPDATE" xml:space="preserve">
     <value>http://cloud.emlab.net/p/pk/ver</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="PK_ICO_APP" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ie.ico;System.Drawing.Icon, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -211,7 +211,7 @@
   <data name="PK_STR_SHOWLOG" xml:space="preserve">
     <value>显示日志</value>
   </data>
-  <data name="PK_STR_TIME" xml:space="preserve">
+  <data name="PK_STR_UPDATETIME" xml:space="preserve">
     <value>网络对时</value>
   </data>
   <data name="PK_ICO_USER_128" type="System.Resources.ResXFileRef, System.Windows.Forms">
@@ -231,5 +231,17 @@
   </data>
   <data name="PK_STR_LOG_SYNCOK" xml:space="preserve">
     <value>对时成功！</value>
+  </data>
+  <data name="PK_STR_UPDATEAPP" xml:space="preserve">
+    <value>检查软件更新</value>
+  </data>
+  <data name="PK_STR_CONFIG" xml:space="preserve">
+    <value>参数设置</value>
+  </data>
+  <data name="PK_STR_UPDATEFOUND" xml:space="preserve">
+    <value>检测到新版本，是否要更新？新版本</value>
+  </data>
+  <data name="PK_STR_UPDATENOTFOUND" xml:space="preserve">
+    <value>未检测到更新</value>
   </data>
 </root>

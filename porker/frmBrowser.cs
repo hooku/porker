@@ -12,20 +12,86 @@ using System.IO;
 
 namespace porker
 {
+    //https://docs.microsoft.com/en-us/dotnet/framework/winforms/controls/stretch-a-toolstriptextbox-to-fill-the-remaining-width-of-a-toolstrip-wf
+    public class ToolStripSpringTextBox : ToolStripTextBox
+    {
+        public override Size GetPreferredSize(Size constrainingSize)
+        {
+            // Use the default size if the text box is on the overflow menu
+            // or is on a vertical ToolStrip.
+            if (IsOnOverflow || Owner.Orientation == Orientation.Vertical)
+            {
+                return DefaultSize;
+            }
+
+            // Declare a variable to store the total available width as 
+            // it is calculated, starting with the display width of the 
+            // owning ToolStrip.
+            Int32 width = Owner.DisplayRectangle.Width;
+
+            // Subtract the width of the overflow button if it is displayed. 
+            if (Owner.OverflowButton.Visible)
+            {
+                width = width - Owner.OverflowButton.Width -
+                    Owner.OverflowButton.Margin.Horizontal;
+            }
+
+            // Declare a variable to maintain a count of ToolStripSpringTextBox 
+            // items currently displayed in the owning ToolStrip. 
+            Int32 springBoxCount = 0;
+
+            foreach (ToolStripItem item in Owner.Items)
+            {
+                // Ignore items on the overflow menu.
+                if (item.IsOnOverflow) continue;
+
+                if (item is ToolStripSpringTextBox)
+                {
+                    // For ToolStripSpringTextBox items, increment the count and 
+                    // subtract the margin width from the total available width.
+                    springBoxCount++;
+                    width -= item.Margin.Horizontal;
+                }
+                else
+                {
+                    // For all other items, subtract the full width from the total
+                    // available width.
+                    width = width - item.Width - item.Margin.Horizontal;
+                }
+            }
+
+            // If there are multiple ToolStripSpringTextBox items in the owning
+            // ToolStrip, divide the total available width between them. 
+            if (springBoxCount > 1) width /= springBoxCount;
+
+            // If the available width is less than the default width, use the
+            // default width, forcing one or more items onto the overflow menu.
+            if (width < DefaultSize.Width) width = DefaultSize.Width;
+
+            // Retrieve the preferred size from the base class, but change the
+            // width to the calculated width. 
+            Size size = base.GetPreferredSize(constrainingSize);
+            size.Width = width;
+            return size;
+        }
+    }
+
     public partial class frmMain : Form
     {
         private ToolStrip pk_tool_bra;
         private ToolStripButton pk_tool_btn_back;
         private ToolStripButton pk_tool_btn_forward;
         private ToolStripSeparator pk_tool_sep1;
-        private ToolStripTextBox pk_tool_txt_url;
+        private ToolStripSpringTextBox pk_tool_txt_url;
         private ToolStripButton pk_tool_btn_refresh;
         private ToolStripSeparator pk_tool_sep2;
         private ToolStripButton pk_tool_btn_login;
         private ToolStripButton pk_tool_btn_run;
+        private ToolStripButton pk_tool_btn_config;
         private ToolStripSeparator pk_tool_sep3;
-        private ToolStripButton pk_tool_btn_time;
         private ToolStripButton pk_tool_btn_showlog;
+        private ToolStripButton pk_tool_btn_updatetime;
+        private ToolStripButton pk_tool_btn_updateapp;
 
         private ListView pk_lv_log;
 
@@ -61,14 +127,16 @@ namespace porker
             this.pk_tool_btn_back = new ToolStripButton();
             this.pk_tool_btn_forward = new ToolStripButton();
             this.pk_tool_sep1 = new ToolStripSeparator();
-            this.pk_tool_txt_url = new ToolStripTextBox();
+            this.pk_tool_txt_url = new ToolStripSpringTextBox();
             this.pk_tool_btn_refresh = new ToolStripButton();
             this.pk_tool_sep2 = new ToolStripSeparator();
             this.pk_tool_btn_login = new ToolStripButton();
             this.pk_tool_btn_run = new ToolStripButton();
+            this.pk_tool_btn_config = new ToolStripButton();
             this.pk_tool_sep3 = new ToolStripSeparator();
-            this.pk_tool_btn_time = new ToolStripButton();
             this.pk_tool_btn_showlog = new ToolStripButton();
+            this.pk_tool_btn_updatetime = new ToolStripButton();
+            this.pk_tool_btn_updateapp = new ToolStripButton();
             
             this.pk_tool_bra.Dock = DockStyle.Top;
             this.pk_tool_bra.ImageScalingSize = new Size(24, 24);
@@ -80,8 +148,7 @@ namespace porker
             this.pk_tool_btn_forward.Image = Properties.Resources.PK_ICO_RIGHT_24.ToBitmap();
             this.pk_tool_btn_forward.Click += new System.EventHandler(this.pk_tool_btn_forward_Click);
 
-            this.pk_tool_txt_url.AutoSize = false;
-            this.pk_tool_txt_url.Width = 650;
+            //this.pk_tool_txt_url.AutoSize = false;
             this.pk_tool_txt_url.KeyDown += new System.Windows.Forms.KeyEventHandler(this.pk_took_txt_url_KeyDown);
 
             this.pk_tool_btn_refresh.Image = Properties.Resources.PK_ICO_REFRESH_24.ToBitmap();
@@ -95,13 +162,21 @@ namespace porker
             this.pk_tool_btn_run.Text = Properties.Resources.PK_STR_RUN;
             this.pk_tool_btn_run.Click += new System.EventHandler(this.pk_tool_btn_run_Click);
 
-            this.pk_tool_btn_time.Image = Properties.Resources.PK_ICO_TIMESYNC_24.ToBitmap();
-            this.pk_tool_btn_time.Text = Properties.Resources.PK_STR_TIME;
-            this.pk_tool_btn_time.Click += new System.EventHandler(this.pk_tool_btn_time_Click);
+            this.pk_tool_btn_config.Image = Properties.Resources.PK_ICO_EXEC_24.ToBitmap();
+            this.pk_tool_btn_config.Text = Properties.Resources.PK_STR_CONFIG;
+            this.pk_tool_btn_config.Click += new System.EventHandler(this.pk_tool_btn_run_Click);
 
             this.pk_tool_btn_showlog.Image = Properties.Resources.PK_ICO_LOG_24.ToBitmap();
             this.pk_tool_btn_showlog.Text = Properties.Resources.PK_STR_SHOWLOG;
             this.pk_tool_btn_showlog.Click += new System.EventHandler(this.pk_tool_btn_showlog_Click);
+
+            this.pk_tool_btn_updatetime.Image = Properties.Resources.PK_ICO_TIMESYNC_24.ToBitmap();
+            this.pk_tool_btn_updatetime.Text = Properties.Resources.PK_STR_UPDATETIME;
+            this.pk_tool_btn_updatetime.Click += new System.EventHandler(this.pk_tool_btn_updatetime_Click);
+
+            this.pk_tool_btn_updateapp.Image = Properties.Resources.PK_ICO_LOG_24.ToBitmap();
+            this.pk_tool_btn_updateapp.Text = Properties.Resources.PK_STR_UPDATEAPP;
+            this.pk_tool_btn_updateapp.Click += new System.EventHandler(this.pk_tool_btn_updateapp_Click);
 
             this.pk_tool_bra.SuspendLayout();
             this.pk_tool_bra.Items.AddRange(new ToolStripItem[] {
@@ -113,9 +188,11 @@ namespace porker
                 this.pk_tool_sep2,
                 this.pk_tool_btn_login,
                 this.pk_tool_btn_run,
+                this.pk_tool_btn_config,
                 this.pk_tool_sep3,
-                this.pk_tool_btn_time,
-                this.pk_tool_btn_showlog
+                this.pk_tool_btn_showlog,
+                this.pk_tool_btn_updatetime,
+                this.pk_tool_btn_updateapp
             });
 
             this.pk_tool_bra.ResumeLayout();
@@ -261,16 +338,20 @@ namespace porker
             this.web_helper.pkh_login(this.pk_browser_front);
         }
 
-        private void pk_tool_btn_time_Click(object sender, EventArgs e)
-        {
-            update_time_caller();
-            //update_app_caller();
-        }
-
         private void pk_tool_btn_showlog_Click(object sender, EventArgs e)
         {
             show_log(!this.pk_tool_btn_showlog.Checked);
             this.web_helper.pkh_post_amend(pk_browser_front);
+        }
+        
+        private void pk_tool_btn_updatetime_Click(object sender, EventArgs e)
+        {
+            update_time_caller();
+        }
+
+        private void pk_tool_btn_updateapp_Click(object sender, EventArgs e)
+        {
+            update_app_caller();
         }
 
         private void frmMain_Shown(object sender, EventArgs e)
@@ -380,24 +461,32 @@ namespace porker
 
                 if (ver_new > ver_current)
                 {
-                    // create a temp copy of application
-                    string tmp_file = Path.GetTempFileName() + ".exe";
-                    File.Copy(System.Reflection.Assembly.GetExecutingAssembly().Location, tmp_file, true);
-
-                    // call application with parameter
-                    ProcessStartInfo proc = new ProcessStartInfo();
-                    proc.FileName = tmp_file;
-                    proc.UseShellExecute = true;
-                    proc.Arguments = "update_app";
-
-                    try
+                    if (MessageBox.Show(Properties.Resources.PK_STR_UPDATEFOUND, "", MessageBoxButtons.YesNo, MessageBoxIcon.Question) ==
+                        System.Windows.Forms.DialogResult.Yes)
                     {
-                        Process.Start(proc);
-                    }
-                    catch (Exception ex)
-                    {
+                        // create a temp copy of application
+                        string tmp_file = Path.GetTempFileName() + ".exe";
+                        File.Copy(System.Reflection.Assembly.GetExecutingAssembly().Location, tmp_file, true);
 
+                        // call application with parameter
+                        ProcessStartInfo proc = new ProcessStartInfo();
+                        proc.FileName = tmp_file;
+                        proc.UseShellExecute = true;
+                        proc.Arguments = "update_app";
+
+                        try
+                        {
+                            Process.Start(proc);
+                        }
+                        catch (Exception ex)
+                        {
+
+                        }
                     }
+                }
+                else
+                {
+                    MessageBox.Show(Properties.Resources.PK_STR_UPDATENOTFOUND, "", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
         }

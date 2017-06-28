@@ -269,6 +269,15 @@ namespace porker.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 参数设置.
+        /// </summary>
+        internal static string PK_STR_CONFIG {
+            get {
+                return ResourceManager.GetString("PK_STR_CONFIG", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to http://zhongbao.10085.cn:18080/.
         /// </summary>
         internal static string PK_STR_HOMEPAGE {
@@ -404,11 +413,38 @@ namespace porker.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 检查软件更新.
+        /// </summary>
+        internal static string PK_STR_UPDATEAPP {
+            get {
+                return ResourceManager.GetString("PK_STR_UPDATEAPP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 检测到新版本，是否要更新？新版本.
+        /// </summary>
+        internal static string PK_STR_UPDATEFOUND {
+            get {
+                return ResourceManager.GetString("PK_STR_UPDATEFOUND", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 未检测到更新.
+        /// </summary>
+        internal static string PK_STR_UPDATENOTFOUND {
+            get {
+                return ResourceManager.GetString("PK_STR_UPDATENOTFOUND", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 网络对时.
         /// </summary>
-        internal static string PK_STR_TIME {
+        internal static string PK_STR_UPDATETIME {
             get {
-                return ResourceManager.GetString("PK_STR_TIME", resourceCulture);
+                return ResourceManager.GetString("PK_STR_UPDATETIME", resourceCulture);
             }
         }
         

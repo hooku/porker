@@ -88,7 +88,7 @@
       <DependentUpon>frmLogin.cs</DependentUpon>
     </Compile>
     <Compile Include="frmBrowser.cs">
-      <SubType>Form</SubType>
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="frmBrowser.Designer.cs">
       <DependentUpon>frmBrowser.cs</DependentUpon>
