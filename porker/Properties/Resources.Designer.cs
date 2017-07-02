@@ -73,6 +73,16 @@ namespace porker.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
+        internal static System.Drawing.Icon PK_ICO_CONFIG_24 {
+            get {
+                object obj = ResourceManager.GetObject("PK_ICO_CONFIG_24", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
         internal static System.Drawing.Icon PK_ICO_ERR_16 {
             get {
                 object obj = ResourceManager.GetObject("PK_ICO_ERR_16", resourceCulture);
@@ -233,6 +243,16 @@ namespace porker.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
+        internal static System.Drawing.Icon PK_ICO_UPDATE_24 {
+            get {
+                object obj = ResourceManager.GetObject("PK_ICO_UPDATE_24", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
         internal static System.Drawing.Icon PK_ICO_USER_128 {
             get {
                 object obj = ResourceManager.GetObject("PK_ICO_USER_128", resourceCulture);
@@ -251,7 +271,7 @@ namespace porker.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 浏览器.
+        ///   Looks up a localized string similar to IE浏览器.
         /// </summary>
         internal static string PK_STR_APP_NAME {
             get {
@@ -413,11 +433,20 @@ namespace porker.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 检查软件更新.
+        ///   Looks up a localized string similar to 检查更新.
         /// </summary>
         internal static string PK_STR_UPDATEAPP {
             get {
                 return ResourceManager.GetString("PK_STR_UPDATEAPP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 更新失败.
+        /// </summary>
+        internal static string PK_STR_UPDATEERR {
+            get {
+                return ResourceManager.GetString("PK_STR_UPDATEERR", resourceCulture);
             }
         }
         
@@ -440,6 +469,15 @@ namespace porker.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 更新成功！.
+        /// </summary>
+        internal static string PK_STR_UPDATEOK {
+            get {
+                return ResourceManager.GetString("PK_STR_UPDATEOK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 网络对时.
         /// </summary>
         internal static string PK_STR_UPDATETIME {
@@ -449,7 +487,16 @@ namespace porker.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to http://cloud.emlab.net/p/pk/ver.
+        ///   Looks up a localized string similar to http://54.223.123.174:8083/poker/auth/login.
+        /// </summary>
+        internal static string PK_STR_URL_LOGIN {
+            get {
+                return ResourceManager.GetString("PK_STR_URL_LOGIN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to http://cloud.emlab.net/p/pk/.
         /// </summary>
         internal static string PK_STR_URL_UPDATE {
             get {

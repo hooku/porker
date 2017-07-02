@@ -8,18 +8,21 @@ namespace porker
 {
     class WebHelper
     {
+        private const int WEB_TIMEOUT = 3000;   // 3sec
+
         // all data in this file are hardcoded
         public void pkh_login(ExtendedWebBrowser browser)
         {
-            browser.Navigate("http://zhongbao.10085.cn:18080/module/public/reg/user_login.html");
-
-            while (browser.ReadyState != WebBrowserReadyState.Complete)
-            {
-                Application.DoEvents();
-            }
-
             try
             {
+                browser.Navigate("http://zhongbao.10085.cn:18080/module/public/reg/user_login.html");
+
+                while (browser.ReadyState != WebBrowserReadyState.Complete)
+                {
+                    // TODO: need add timeout
+                    Application.DoEvents();
+                }
+
                 browser.Document.GetElementById("mobile").Focus();
                 browser.Document.GetElementById("mobile").InnerText = Properties.Settings.Default.PK_DEBUG_USER;
                 browser.Document.GetElementById("password").InnerText = Properties.Settings.Default.PK_DEBUG_PASS;

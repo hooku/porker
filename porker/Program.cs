@@ -4,6 +4,8 @@ using System.Net;
 using System.Windows.Forms;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
+using System.IO;
+using System.Diagnostics;
 
 namespace porker
 {
@@ -33,6 +35,8 @@ namespace porker
         [STAThread]
         static void Main(string[] args)
         {
+            //update_app();
+
             if (args.Length >= 1)
             {
                 if (args[0] == "update_time")
@@ -58,59 +62,59 @@ namespace porker
         private static DateTime GetNetworkTime()
         {
             //default Windows time server
-            const string ntpServer = "time.windows.com";    //"time.pool.aliyun.com";
+            const string ntp_server = "time.windows.com";    //"time.pool.aliyun.com";
 
             // NTP message size - 16 bytes of the digest (RFC 2030)
-            var ntpData = new byte[48];
+            var ntp_data = new byte[48];
 
-            var networkDateTime = (new DateTime(1900, 1, 1, 0, 0, 0, DateTimeKind.Utc));
+            var network_date_time = (new DateTime(1900, 1, 1, 0, 0, 0, DateTimeKind.Utc));
 
             //Setting the Leap Indicator, Version Number and Mode values
-            ntpData[0] = 0x1B; //LI = 0 (no warning), VN = 3 (IPv4 only), Mode = 3 (Client Mode)
+            ntp_data[0] = 0x1B; //LI = 0 (no warning), VN = 3 (IPv4 only), Mode = 3 (Client Mode)
 
-            var addresses = Dns.GetHostEntry(ntpServer).AddressList;
+            var addresses = Dns.GetHostEntry(ntp_server).AddressList;
 
             //The UDP port number assigned to NTP is 123
-            var ipEndPoint = new IPEndPoint(addresses[0], 123);
+            var ip_end_point = new IPEndPoint(addresses[0], 123);
             //NTP uses UDP
             var socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
 
-            socket.Connect(ipEndPoint);
+            socket.Connect(ip_end_point);
 
             //Stops code hang if NTP is blocked
             socket.ReceiveTimeout = 3000;
 
             try
             {
-                socket.Send(ntpData);
-                socket.Receive(ntpData);
+                socket.Send(ntp_data);
+                socket.Receive(ntp_data);
                 socket.Close();
             }
             catch (Exception ex)
             {
-                return networkDateTime;
+                return network_date_time;
             }
 
             //Offset to get to the "Transmit Timestamp" field (time at which the reply 
             //departed the server for the client, in 64-bit timestamp format."
-            const byte serverReplyTime = 40;
+            const byte server_reply_time = 40;
 
             //Get the seconds part
-            ulong intPart = BitConverter.ToUInt32(ntpData, serverReplyTime);
+            ulong int_part = BitConverter.ToUInt32(ntp_data, server_reply_time);
 
             //Get the seconds fraction
-            ulong fractPart = BitConverter.ToUInt32(ntpData, serverReplyTime + 4);
+            ulong fract_part = BitConverter.ToUInt32(ntp_data, server_reply_time + 4);
 
             //Convert From big-endian to little-endian
-            intPart = SwapEndianness(intPart);
-            fractPart = SwapEndianness(fractPart);
+            int_part = SwapEndianness(int_part);
+            fract_part = SwapEndianness(fract_part);
 
-            var milliseconds = (intPart * 1000) + ((fractPart * 1000) / 0x100000000L);
+            var milliseconds = (int_part * 1000) + ((fract_part * 1000) / 0x100000000L);
 
             //**UTC** time
-           networkDateTime.AddMilliseconds((long)milliseconds);
+            network_date_time.AddMilliseconds((long)milliseconds);
 
-            return networkDateTime;
+            return network_date_time;
         }
 
         // stackoverflow.com/a/3294698/162671
@@ -147,18 +151,46 @@ namespace porker
 
         static void update_app()
         {
-            if (true)
+            string tmp_file = Path.GetTempFileName();
+            string original_file;
+
+            FileVersionInfo porker_ver_info = FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetEntryAssembly().Location);
+
+            try
             {
+                using (var client = new WebClient())
+                {
+                    // download latest file
+                    client.DownloadFile(Properties.Resources.PK_STR_URL_UPDATE + porker_ver_info.OriginalFilename, tmp_file);
+                }
+            }
+            catch
+            {
+                MessageBox.Show(Properties.Resources.PK_STR_UPDATEERR);
+                return ;
+            }
 
-                // download latest file
+            // find process path
 
+            Process[] pname = Process.GetProcessesByName(porker_ver_info.ProductName);
+            if (pname.Length > 0)
+            {
+                original_file = pname[0].MainModule.FileName;
 
-                MessageBox.Show("OK!");
+                // kill process
+                pname[0].Kill();
 
                 // remove old file
+                File.Delete(original_file);
 
-                // switch to newest file
+                // switch to new file
+                File.Move(tmp_file, original_file);
 
+                MessageBox.Show(Properties.Resources.PK_STR_UPDATEOK);
+            }
+            else
+            {
+                MessageBox.Show(Properties.Resources.PK_STR_UPDATEERR);
             }
         }
 

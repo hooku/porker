@@ -46,5 +46,17 @@ namespace porker.Properties {
                 this["PK_DEBUG_USER"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://54.223.123.174:8083/poker/auth/login")]
+        public string PK_LOGIN_AUTH_URL {
+            get {
+                return ((string)(this["PK_LOGIN_AUTH_URL"]));
+            }
+            set {
+                this["PK_LOGIN_AUTH_URL"] = value;
+            }
+        }
     }
 }

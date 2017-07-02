@@ -119,8 +119,10 @@ namespace porker
         {
             // form
             this.Icon = Properties.Resources.PK_ICO_APP;
-            this.Text = Properties.Resources.PK_STR_APP_NAME + " " +
-                Assembly.GetExecutingAssembly().GetName().Version.ToString(); 
+
+            System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
+            this.Text = Properties.Resources.PK_STR_APP_NAME + " " + fvi.FileVersion;
 
             // tool bar
             this.pk_tool_bra = new ToolStrip();
@@ -162,7 +164,7 @@ namespace porker
             this.pk_tool_btn_run.Text = Properties.Resources.PK_STR_RUN;
             this.pk_tool_btn_run.Click += new System.EventHandler(this.pk_tool_btn_run_Click);
 
-            this.pk_tool_btn_config.Image = Properties.Resources.PK_ICO_EXEC_24.ToBitmap();
+            this.pk_tool_btn_config.Image = Properties.Resources.PK_ICO_CONFIG_24.ToBitmap();
             this.pk_tool_btn_config.Text = Properties.Resources.PK_STR_CONFIG;
             this.pk_tool_btn_config.Click += new System.EventHandler(this.pk_tool_btn_run_Click);
 
@@ -174,7 +176,7 @@ namespace porker
             this.pk_tool_btn_updatetime.Text = Properties.Resources.PK_STR_UPDATETIME;
             this.pk_tool_btn_updatetime.Click += new System.EventHandler(this.pk_tool_btn_updatetime_Click);
 
-            this.pk_tool_btn_updateapp.Image = Properties.Resources.PK_ICO_LOG_24.ToBitmap();
+            this.pk_tool_btn_updateapp.Image = Properties.Resources.PK_ICO_UPDATE_24.ToBitmap();
             this.pk_tool_btn_updateapp.Text = Properties.Resources.PK_STR_UPDATEAPP;
             this.pk_tool_btn_updateapp.Click += new System.EventHandler(this.pk_tool_btn_updateapp_Click);
 
@@ -254,12 +256,12 @@ namespace porker
             this.Controls.Add(this.pk_tool_bra);
 
             // timer
-            timer_clock = new System.Threading.Timer(timer_clock_cb, null, 0, 1000);
+            timer_clock = new System.Threading.Timer(timer_clock_cb, null, 0, TIMER_CLOCK_REFRESH_INTERVAL);
 
             // other class
             web_helper = new WebHelper();
 
-            show_log(true);
+            show_log(false);
         }
 
         public frmMain()
@@ -360,8 +362,10 @@ namespace porker
             poker_add_page(Properties.Resources.PK_STR_HOMEPAGE);
             update_front();
 
+#if false
             // debug for company
             this.pk_browser_front.Navigate("http://127.0.0.1/p/fsl-securityvalidation.html");
+#endif
 
             frmLogin frm_login = new frmLogin();
             frm_login.ShowDialog(this);
@@ -451,9 +455,17 @@ namespace porker
             // read the version file
             using (var client = new WebClient())
             {
-                string ver_str = client.DownloadString(Properties.Resources.PK_STR_URL_UPDATE);
+                string ver_str = "";
+                Version ver_new = null;
+                try
+                {
+                    ver_str = client.DownloadString(Properties.Resources.PK_STR_URL_UPDATE);
+                    ver_new = new Version(ver_str);
+                }
+                catch (Exception ex)
+                {
 
-                Version ver_new = new Version(ver_str);
+                }
 
                 System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
                 FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
@@ -461,7 +473,7 @@ namespace porker
 
                 if (ver_new > ver_current)
                 {
-                    if (MessageBox.Show(Properties.Resources.PK_STR_UPDATEFOUND, "", MessageBoxButtons.YesNo, MessageBoxIcon.Question) ==
+                    if (MessageBox.Show(Properties.Resources.PK_STR_UPDATEFOUND + ver_str, "", MessageBoxButtons.YesNo, MessageBoxIcon.Question) ==
                         System.Windows.Forms.DialogResult.Yes)
                     {
                         // create a temp copy of application
