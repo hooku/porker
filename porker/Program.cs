@@ -22,6 +22,19 @@ namespace porker
         public ushort wMilliseconds;
     }
 
+    public class WebClient : System.Net.WebClient
+    {
+        public int Timeout { get; set; }
+
+        protected override WebRequest GetWebRequest(Uri uri)
+        {
+            WebRequest local_webrequest = base.GetWebRequest(uri);
+            local_webrequest.Timeout = Properties.Settings.Default.PK_WEB_TIMEOUT;
+            ((HttpWebRequest)local_webrequest).ReadWriteTimeout = local_webrequest.Timeout;
+            return local_webrequest;
+        }
+    }
+
     static class Program
     {
         [DllImport("kernel32.dll", SetLastError = true)]
@@ -35,7 +48,12 @@ namespace porker
         [STAThread]
         static void Main(string[] args)
         {
-            //update_app();
+#if false
+            update_time();
+#endif
+#if false
+            update_app();
+#endif
 
             if (args.Length >= 1)
             {
@@ -61,8 +79,7 @@ namespace porker
         // stackoverflow.com/questions/1193955
         private static DateTime GetNetworkTime()
         {
-            //default Windows time server
-            const string ntp_server = "time.windows.com";    //"time.pool.aliyun.com";
+            string ntp_server = Properties.Settings.Default.PK_NTP_SERVER;
 
             // NTP message size - 16 bytes of the digest (RFC 2030)
             var ntp_data = new byte[48];
@@ -112,9 +129,7 @@ namespace porker
             var milliseconds = (int_part * 1000) + ((fract_part * 1000) / 0x100000000L);
 
             //**UTC** time
-            network_date_time.AddMilliseconds((long)milliseconds);
-
-            return network_date_time;
+            return network_date_time.AddMilliseconds((long)milliseconds);
         }
 
         // stackoverflow.com/a/3294698/162671
@@ -171,7 +186,6 @@ namespace porker
             }
 
             // find process path
-
             Process[] pname = Process.GetProcessesByName(porker_ver_info.ProductName);
             if (pname.Length > 0)
             {
@@ -179,6 +193,7 @@ namespace porker
 
                 // kill process
                 pname[0].Kill();
+                pname[0].WaitForExit();
 
                 // remove old file
                 File.Delete(original_file);
@@ -187,6 +202,9 @@ namespace porker
                 File.Move(tmp_file, original_file);
 
                 MessageBox.Show(Properties.Resources.PK_STR_UPDATEOK);
+
+                // start new file
+                Process.Start(original_file);
             }
             else
             {

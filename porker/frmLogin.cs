@@ -30,8 +30,8 @@ namespace porker
             this.pk_btn_login.Text = Properties.Resources.PK_STR_LOGIN_CMD;
             this.pk_lbl_descript.Text = Properties.Resources.PK_STR_LOGIN_DESCRIPT;
 
-            this.pk_txt_user.Text = Properties.Settings.Default.PK_DEBUG_USER;
-            this.pk_txt_pass.Text = Properties.Settings.Default.PK_DEBUG_PASS;
+            this.pk_txt_user.Text = Properties.Settings.Default.PK_DEFAULT_USER;
+            this.pk_txt_pass.Text = Properties.Settings.Default.PK_DEFAULT_PASS;
 
             this.AcceptButton = this.pk_btn_login;
         }
@@ -46,16 +46,16 @@ namespace porker
 
         private void pk_btn_login_Click(object sender, EventArgs e)
         {
-            if (this.pk_txt_user.Text == Properties.Settings.Default.PK_DEBUG_USER &&
-                this.pk_txt_pass.Text == Properties.Settings.Default.PK_DEBUG_PASS)
+            if (this.pk_txt_user.Text == Properties.Settings.Default.PK_DEFAULT_USER &&
+                this.pk_txt_pass.Text == Properties.Settings.Default.PK_DEFAULT_PASS)
             {
 
 #if ENABLE_LOGIN_AUTH
                 login_success = login_auth(this.pk_txt_user.Text, this.pk_txt_pass.Text);
 #else
                 // simple check
-                Properties.Settings.Default.PK_DEBUG_USER = this.pk_txt_user.Text;
-                Properties.Settings.Default.PK_DEBUG_PASS = this.pk_txt_pass.Text;
+                Properties.Settings.Default.PK_DEFAULT_USER = this.pk_txt_user.Text;
+                Properties.Settings.Default.PK_DEFAULT_PASS = this.pk_txt_pass.Text;
                 Properties.Settings.Default.Save();
                 login_success = true;
 #endif
@@ -97,7 +97,7 @@ namespace porker
             }
             catch (Exception ex)
             {
-
+                MessageBox.Show(Properties.Resources.PK_STR_LOGIN_SERVERERR, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             if (response_str != "")

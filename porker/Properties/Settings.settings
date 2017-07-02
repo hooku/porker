@@ -2,11 +2,23 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="porker.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="PK_DEBUG_PASS" Type="System.String" Scope="User">
+    <Setting Name="PK_DEFAULT_PASS" Type="System.String" Scope="User">
       <Value Profile="(Default)">zhongbao123</Value>
     </Setting>
-    <Setting Name="PK_DEBUG_USER" Type="System.String" Scope="User">
+    <Setting Name="PK_DEFAULT_USER" Type="System.String" Scope="User">
       <Value Profile="(Default)">15884156797</Value>
+    </Setting>
+    <Setting Name="PK_RUN_REQ" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">100</Value>
+    </Setting>
+    <Setting Name="PK_LOGIN_AUTH_URL" Type="System.String" Scope="User">
+      <Value Profile="(Default)">http://54.223.123.174:8083/poker/auth/login</Value>
+    </Setting>
+    <Setting Name="PK_WEB_TIMEOUT" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">2000</Value>
+    </Setting>
+    <Setting Name="PK_NTP_SERVER" Type="System.String" Scope="User">
+      <Value Profile="(Default)">time.pool.aliyun.com</Value>
     </Setting>
   </Settings>
 </SettingsFile>

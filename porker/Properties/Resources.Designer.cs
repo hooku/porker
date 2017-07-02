@@ -298,11 +298,38 @@ namespace porker.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to notepad.
+        /// </summary>
+        internal static string PK_STR_CONFIGAPP {
+            get {
+                return ResourceManager.GetString("PK_STR_CONFIGAPP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 参数配置已更新.
+        /// </summary>
+        internal static string PK_STR_CONFIGOK {
+            get {
+                return ResourceManager.GetString("PK_STR_CONFIGOK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to http://zhongbao.10085.cn:18080/.
         /// </summary>
         internal static string PK_STR_HOMEPAGE {
             get {
                 return ResourceManager.GetString("PK_STR_HOMEPAGE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 打开参数设置.
+        /// </summary>
+        internal static string PK_STR_LOG_CONFIG {
+            get {
+                return ResourceManager.GetString("PK_STR_LOG_CONFIG", resourceCulture);
             }
         }
         
@@ -406,6 +433,15 @@ namespace porker.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 登录服务器故障.
+        /// </summary>
+        internal static string PK_STR_LOGIN_SERVERERR {
+            get {
+                return ResourceManager.GetString("PK_STR_LOGIN_SERVERERR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 用户名：.
         /// </summary>
         internal static string PK_STR_LOGIN_USER {
@@ -483,15 +519,6 @@ namespace porker.Properties {
         internal static string PK_STR_UPDATETIME {
             get {
                 return ResourceManager.GetString("PK_STR_UPDATETIME", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to http://54.223.123.174:8083/poker/auth/login.
-        /// </summary>
-        internal static string PK_STR_URL_LOGIN {
-            get {
-                return ResourceManager.GetString("PK_STR_URL_LOGIN", resourceCulture);
             }
         }
         

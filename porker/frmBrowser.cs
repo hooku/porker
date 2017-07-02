@@ -9,12 +9,14 @@ using System.Reflection;
 using System.Net;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
+using System.Configuration;
 
 namespace porker
 {
-    //https://docs.microsoft.com/en-us/dotnet/framework/winforms/controls/stretch-a-toolstriptextbox-to-fill-the-remaining-width-of-a-toolstrip-wf
     public class ToolStripSpringTextBox : ToolStripTextBox
     {
+        // docs.microsoft.com/en-us/dotnet/framework/winforms/controls/stretch-a-toolstriptextbox-to-fill-the-remaining-width-of-a-toolstrip-wf
         public override Size GetPreferredSize(Size constrainingSize)
         {
             // Use the default size if the text box is on the overflow menu
@@ -76,6 +78,44 @@ namespace porker
         }
     }
 
+    public class INIParser
+    {
+        string ini_path;
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+        static extern uint GetPrivateProfileString(
+           string lpAppName,
+           string lpKeyName,
+           string lpDefault,
+           StringBuilder lpReturnedString,
+           uint nSize,
+           string lpFileName);
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool WritePrivateProfileString(string lpAppName,
+           string lpKeyName, string lpString, string lpFileName);
+
+        public INIParser(string path)
+        {
+            ini_path = path;
+        }
+
+        public string read(string key)
+        {
+            string section = Properties.Resources.PK_STR_APP_NAME;
+            var result = new StringBuilder(255);
+            GetPrivateProfileString(section, key, "", result, 255, ini_path);
+            return result.ToString();
+        }
+
+        public void write(string key, string value)
+        {
+            string section = Properties.Resources.PK_STR_APP_NAME;
+            WritePrivateProfileString(section, key, value, ini_path);
+        }
+    }
+
     public partial class frmMain : Form
     {
         private ToolStrip pk_tool_bra;
@@ -109,11 +149,13 @@ namespace porker
         WebHelper web_helper;
         System.Threading.Timer timer_clock;
 
-        private const int PK_LV_LOG_WIDTH = 260;  //px
+        private const int PK_LV_LOG_WIDTH = 260;    //px
         private const int PK_LV_LOG_TIME_WIDTH = 70;
         private const int PK_LV_LOG_TXT_WIDTH = 185;
 
         private const int TIMER_CLOCK_REFRESH_INTERVAL = 1000;
+
+        private bool pk_play = false;
 
         private void create_form_components()
         {
@@ -139,7 +181,7 @@ namespace porker
             this.pk_tool_btn_showlog = new ToolStripButton();
             this.pk_tool_btn_updatetime = new ToolStripButton();
             this.pk_tool_btn_updateapp = new ToolStripButton();
-            
+
             this.pk_tool_bra.Dock = DockStyle.Top;
             this.pk_tool_bra.ImageScalingSize = new Size(24, 24);
 
@@ -166,7 +208,7 @@ namespace porker
 
             this.pk_tool_btn_config.Image = Properties.Resources.PK_ICO_CONFIG_24.ToBitmap();
             this.pk_tool_btn_config.Text = Properties.Resources.PK_STR_CONFIG;
-            this.pk_tool_btn_config.Click += new System.EventHandler(this.pk_tool_btn_run_Click);
+            this.pk_tool_btn_config.Click += new System.EventHandler(this.pk_tool_btn_config_Click);
 
             this.pk_tool_btn_showlog.Image = Properties.Resources.PK_ICO_LOG_24.ToBitmap();
             this.pk_tool_btn_showlog.Text = Properties.Resources.PK_STR_SHOWLOG;
@@ -277,7 +319,7 @@ namespace porker
             TabPage ex_tab = new TabPage();
             ex_tab.Text = "Loading..";
             ex_tab.ImageIndex = 0;
-//            ex_tab.Click += new System.EventHandler(this.pk_tabpage_Click);
+            //            ex_tab.Click += new System.EventHandler(this.pk_tabpage_Click);
 
             ExtendedWebBrowser ex_browser = new ExtendedWebBrowser();
             ex_browser.Name = "ex";
@@ -337,7 +379,13 @@ namespace porker
         private void pk_tool_btn_run_Click(object sender, EventArgs e)
         {
             Program.log(Properties.Resources.PK_STR_LOG_LOGIN);
-            this.web_helper.pkh_login(this.pk_browser_front);
+            play_porker();
+        }
+
+        private void pk_tool_btn_config_Click(object sender, EventArgs e)
+        {
+            Program.log(Properties.Resources.PK_STR_LOG_CONFIG);
+            edit_config();
         }
 
         private void pk_tool_btn_showlog_Click(object sender, EventArgs e)
@@ -345,7 +393,7 @@ namespace porker
             show_log(!this.pk_tool_btn_showlog.Checked);
             this.web_helper.pkh_post_amend(pk_browser_front);
         }
-        
+
         private void pk_tool_btn_updatetime_Click(object sender, EventArgs e)
         {
             update_time_caller();
@@ -410,7 +458,7 @@ namespace porker
             {
                 // keep the last tab
                 if (pk_tab.TabCount <= 1)
-                    return ;
+                    return;
 
                 if (pk_tab.GetTabRect(index).Contains(e.Location))
                 {
@@ -448,6 +496,51 @@ namespace porker
                 this.pk_status_txt_green_bulb.Image = Properties.Resources.PK_ICO_GREEN.ToBitmap();
                 this.pk_status_txt_red_bulb.Image = Properties.Resources.PK_ICO_GREY.ToBitmap();
             }
+        }
+
+        private void play_porker()
+        {
+            if (pk_play == false)
+            {
+                pk_play = true;
+            }
+            else
+            {
+                pk_play = false;
+            }
+            this.pk_tool_btn_run.Checked = pk_play;
+            set_status_busy(pk_play);
+        }
+
+        private void edit_config()
+        {
+            string tmp_file = Path.GetTempFileName();
+            INIParser ini_parser = new INIParser(tmp_file);
+
+            foreach (SettingsProperty current_prop in Properties.Settings.Default.Properties)
+            {
+                ini_parser.write(current_prop.Name, Properties.Settings.Default[current_prop.Name].ToString());
+            }
+
+            var editor = Process.Start(Properties.Resources.PK_STR_CONFIGAPP, tmp_file);
+            editor.WaitForExit();
+
+            foreach (SettingsProperty current_prop in Properties.Settings.Default.Properties)
+            {
+                string value = ini_parser.read(current_prop.Name);
+
+                if (current_prop.PropertyType == typeof(int))
+                {
+                    Properties.Settings.Default[current_prop.Name] = Int32.Parse(value);
+                }
+                else
+                {
+                    Properties.Settings.Default[current_prop.Name] = value;
+                }
+            }
+
+            Properties.Settings.Default.Save();
+            MessageBox.Show(Properties.Resources.PK_STR_CONFIGOK);
         }
 
         private void update_app_caller()

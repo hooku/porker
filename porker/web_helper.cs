@@ -24,8 +24,8 @@ namespace porker
                 }
 
                 browser.Document.GetElementById("mobile").Focus();
-                browser.Document.GetElementById("mobile").InnerText = Properties.Settings.Default.PK_DEBUG_USER;
-                browser.Document.GetElementById("password").InnerText = Properties.Settings.Default.PK_DEBUG_PASS;
+                browser.Document.GetElementById("mobile").InnerText = Properties.Settings.Default.PK_DEFAULT_USER;
+                browser.Document.GetElementById("password").InnerText = Properties.Settings.Default.PK_DEFAULT_PASS;
                 browser.Document.GetElementById("regcheckcode").Focus();
             }
             catch (Exception ex)

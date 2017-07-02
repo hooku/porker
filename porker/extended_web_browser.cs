@@ -1,4 +1,4 @@
-﻿//http://blogs.artinsoft.net/Mrojas/archive/2008/09/18/Extended-WebBrowser-Control-SeriesNewWindow2-Events-in-the-C-WebBrowserControl.aspx
+﻿// blogs.artinsoft.net/Mrojas/archive/2008/09/18/Extended-WebBrowser-Control-SeriesNewWindow2-Events-in-the-C-WebBrowserControl.aspx
 using System;
 using System.Windows.Forms;
 using System.ComponentModel;

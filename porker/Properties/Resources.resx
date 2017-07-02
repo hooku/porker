@@ -129,7 +129,7 @@
   <data name="PK_STR_URL_UPDATE" xml:space="preserve">
     <value>http://cloud.emlab.net/p/pk/</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="PK_ICO_APP" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ie.ico;System.Drawing.Icon, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -250,13 +250,22 @@
   <data name="PK_ICO_UPDATE_24" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\update_24.ico;System.Drawing.Icon, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="PK_STR_URL_LOGIN" xml:space="preserve">
-    <value>http://54.223.123.174:8083/poker/auth/login</value>
-  </data>
   <data name="PK_STR_UPDATEERR" xml:space="preserve">
     <value>更新失败</value>
   </data>
   <data name="PK_STR_UPDATEOK" xml:space="preserve">
     <value>更新成功！</value>
+  </data>
+  <data name="PK_STR_LOGIN_SERVERERR" xml:space="preserve">
+    <value>登录服务器故障</value>
+  </data>
+  <data name="PK_STR_LOG_CONFIG" xml:space="preserve">
+    <value>打开参数设置</value>
+  </data>
+  <data name="PK_STR_CONFIGOK" xml:space="preserve">
+    <value>参数配置已更新</value>
+  </data>
+  <data name="PK_STR_CONFIGAPP" xml:space="preserve">
+    <value>notepad</value>
   </data>
 </root>
