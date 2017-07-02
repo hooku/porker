@@ -1,6 +1,6 @@
 ﻿namespace porker
 {
-    partial class frmMain
+    partial class frmBrowser
     {
         /// <summary>
         /// Required designer variable.
@@ -30,15 +30,14 @@
         {
             this.SuspendLayout();
             // 
-            // frmMain
+            // frmBrowser
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(292, 273);
-            this.Name = "frmMain";
+            this.Name = "frmBrowser";
             this.Text = "frmBrowser";
-            this.Load += new System.EventHandler(this.frmMain_Load);
-            this.Shown += new System.EventHandler(this.frmMain_Shown);
+            this.Shown += new System.EventHandler(this.frmBrowser_Shown);
             this.ResumeLayout(false);
 
         }

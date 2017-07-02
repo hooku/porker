@@ -268,4 +268,7 @@
   <data name="PK_STR_CONFIGAPP" xml:space="preserve">
     <value>notepad</value>
   </data>
+  <data name="PK_STR_LOG_PLAY" xml:space="preserve">
+    <value>自动抢单进行中...</value>
+  </data>
 </root>

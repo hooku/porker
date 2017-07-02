@@ -49,13 +49,13 @@ namespace porker.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("100")]
-        public int PK_RUN_REQ {
+        [global::System.Configuration.DefaultSettingValueAttribute("1000")]
+        public int PK_PLAY_REQ {
             get {
-                return ((int)(this["PK_RUN_REQ"]));
+                return ((int)(this["PK_PLAY_REQ"]));
             }
             set {
-                this["PK_RUN_REQ"] = value;
+                this["PK_PLAY_REQ"] = value;
             }
         }
         

@@ -8,8 +8,8 @@
     <Setting Name="PK_DEFAULT_USER" Type="System.String" Scope="User">
       <Value Profile="(Default)">15884156797</Value>
     </Setting>
-    <Setting Name="PK_RUN_REQ" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">100</Value>
+    <Setting Name="PK_PLAY_REQ" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">1000</Value>
     </Setting>
     <Setting Name="PK_LOGIN_AUTH_URL" Type="System.String" Scope="User">
       <Value Profile="(Default)">http://54.223.123.174:8083/poker/auth/login</Value>

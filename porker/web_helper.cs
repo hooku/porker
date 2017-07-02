@@ -8,8 +8,6 @@ namespace porker
 {
     class WebHelper
     {
-        private const int WEB_TIMEOUT = 3000;   // 3sec
-
         // all data in this file are hardcoded
         public void pkh_login(ExtendedWebBrowser browser)
         {
@@ -74,9 +72,66 @@ namespace porker
         }
 
         // get the ticket
-        public void pkh_play(ExtendedWebBrowser browser)
+        public int pkh_play(ExtendedWebBrowser browser)
         {
-            Program.log("hi");
+            int icon_exec_index = 0;
+
+            if (browser.Url.ToString().Contains("project_detail.html"))
+            {
+                foreach (HtmlElement pk_elem in browser.Document.All)
+                {
+                    if (pk_elem.GetAttribute("className") == "data-loading")
+                    {
+                        if (pk_elem.Style == "display:block")
+                        {
+                            icon_exec_index = (int)EXEC_ICON.EXEC_RED;
+                            break;
+                        }
+                    }
+
+                    switch (pk_elem.GetAttribute("className"))
+                    {
+                        case "ui-dialog-content":
+                            Program.log("对话框");
+                            if (pk_elem.InnerText.Contains("抢完"))
+                            {
+                                // 亲，很抱歉项目已被抢完了哦～
+                                icon_exec_index = (int)EXEC_ICON.EXEC_GREY;
+                            } 
+                            else if (pk_elem.InnerText.Contains("很抱歉"))
+                            {
+                                // 很抱歉，您拥有的资格数量已达到上限值1
+                                icon_exec_index = (int)EXEC_ICON.EXEC_GREY;
+                            }
+                            else if (pk_elem.InnerText.Contains("超时"))
+                            {
+                                // 网络异常或超时，请稍候再试！
+                                browser.Refresh(WebBrowserRefreshOption.Completely);
+                                icon_exec_index = (int)EXEC_ICON.EXEC_RED;
+                            }
+                            break;
+                        case "btn btn-yellow btn-mid J_start_work mt-5":    // "开始工作"
+                        case "btn btn-yellow btn-mid J_grab_single mt-5":   // "开始抢单"
+                            if (pk_elem.GetAttribute("clicked") != "true")
+                            {
+                                Program.log("点击按钮");
+                                pk_elem.SetAttribute("clicked", "true");
+                                pk_elem.InvokeMember("Click");
+                                icon_exec_index = (int)EXEC_ICON.EXEC_RED;
+                            }
+                            break;
+                        case "btn btn-yellow btn-disabled btn-mid mt-5":    // button disabled
+                            Program.log("刷新");
+                            browser.Refresh(WebBrowserRefreshOption.Completely);
+                            icon_exec_index = (int)EXEC_ICON.EXEC_RED;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+
+            return icon_exec_index;
         }
     }
 }

@@ -352,6 +352,15 @@ namespace porker.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 自动抢单进行中....
+        /// </summary>
+        internal static string PK_STR_LOG_PLAY {
+            get {
+                return ResourceManager.GetString("PK_STR_LOG_PLAY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 开始对时.
         /// </summary>
         internal static string PK_STR_LOG_SYNC {

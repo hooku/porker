@@ -14,7 +14,15 @@ using System.Configuration;
 
 namespace porker
 {
-    public class ToolStripSpringTextBox : ToolStripTextBox
+    public enum EXEC_ICON
+    {
+        EXEC_IE = 0,
+        EXEC_RED = 1,
+        EXEC_GREEN = 2,
+        EXEC_GREY = 3,
+    }
+
+    class ToolStripSpringTextBox : ToolStripTextBox
     {
         // docs.microsoft.com/en-us/dotnet/framework/winforms/controls/stretch-a-toolstriptextbox-to-fill-the-remaining-width-of-a-toolstrip-wf
         public override Size GetPreferredSize(Size constrainingSize)
@@ -78,6 +86,28 @@ namespace porker
         }
     }
 
+    class ListViewNF : ListView
+    {
+        public ListViewNF()
+        {
+            //Activate double buffering
+            this.SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint, true);
+
+            //Enable the OnNotifyMessage event so we get a chance to filter out 
+            // Windows messages before they get to the form's WndProc
+            this.SetStyle(ControlStyles.EnableNotifyMessage, true);
+        }
+
+        protected override void OnNotifyMessage(Message m)
+        {
+            //Filter out the WM_ERASEBKGND message
+            if (m.Msg != 0x14)
+            {
+                base.OnNotifyMessage(m);
+            }
+        }
+    }
+
     public class INIParser
     {
         string ini_path;
@@ -116,7 +146,7 @@ namespace porker
         }
     }
 
-    public partial class frmMain : Form
+    public partial class frmBrowser : Form
     {
         private ToolStrip pk_tool_bra;
         private ToolStripButton pk_tool_btn_back;
@@ -133,7 +163,7 @@ namespace porker
         private ToolStripButton pk_tool_btn_updatetime;
         private ToolStripButton pk_tool_btn_updateapp;
 
-        private ListView pk_lv_log;
+        private ListViewNF pk_lv_log;
 
         private TabControl pk_tab;
         private ImageList pk_imglist_log;
@@ -144,6 +174,8 @@ namespace porker
         private ToolStripStatusLabel pk_status_txt_stat;
         private ToolStripStatusLabel pk_status_txt_green_bulb;
         private ToolStripStatusLabel pk_status_txt_red_bulb;
+
+        private Timer pk_timer_play;
 
         ExtendedWebBrowser pk_browser_front;
         WebHelper web_helper;
@@ -243,7 +275,7 @@ namespace porker
 
             // listview
             this.pk_imglist_log = new ImageList();
-            this.pk_lv_log = new ListView();
+            this.pk_lv_log = new ListViewNF();
 
             this.pk_imglist_log.ColorDepth = ColorDepth.Depth32Bit;
             this.pk_imglist_log.Images.Add(Properties.Resources.PK_ICO_INFO_16);
@@ -265,6 +297,8 @@ namespace porker
             this.pk_imglist_tab.ColorDepth = ColorDepth.Depth32Bit;
             this.pk_imglist_tab.Images.Add(Properties.Resources.PK_ICO_IEPAGE_16);
             this.pk_imglist_tab.Images.Add(Properties.Resources.PK_ICO_EXEC_16);
+            this.pk_imglist_tab.Images.Add(Properties.Resources.PK_ICO_EXECGREEN_16);
+            this.pk_imglist_tab.Images.Add(Properties.Resources.PK_ICO_EXECGREY_16);
 
             this.pk_tab.Dock = DockStyle.Fill;
             this.pk_tab.ImageList = this.pk_imglist_tab;
@@ -297,6 +331,10 @@ namespace porker
             this.Controls.Add(this.pk_lv_log);
             this.Controls.Add(this.pk_tool_bra);
 
+            this.pk_timer_play = new Timer();
+            this.pk_timer_play.Interval = Properties.Settings.Default.PK_PLAY_REQ;
+            this.pk_timer_play.Tick += new System.EventHandler(this.pk_timer_play_Tick);
+
             // timer
             timer_clock = new System.Threading.Timer(timer_clock_cb, null, 0, TIMER_CLOCK_REFRESH_INTERVAL);
 
@@ -306,7 +344,7 @@ namespace porker
             show_log(false);
         }
 
-        public frmMain()
+        public frmBrowser()
         {
             InitializeComponent();
 
@@ -367,7 +405,11 @@ namespace porker
 
         private void pk_tool_btn_refresh_Click(object sender, EventArgs e)
         {
+            WebBrowserNavigatedEventArgs web_e = new WebBrowserNavigatedEventArgs(
+                this.pk_browser_front.Url);
+
             this.pk_browser_front.Refresh(WebBrowserRefreshOption.Completely);
+            pk_browser_Navigated(this.pk_browser_front, web_e);
         }
 
         private void pk_tool_btn_login_Click(object sender, EventArgs e)
@@ -378,7 +420,6 @@ namespace porker
 
         private void pk_tool_btn_run_Click(object sender, EventArgs e)
         {
-            Program.log(Properties.Resources.PK_STR_LOG_LOGIN);
             play_porker();
         }
 
@@ -404,7 +445,7 @@ namespace porker
             update_app_caller();
         }
 
-        private void frmMain_Shown(object sender, EventArgs e)
+        private void frmBrowser_Shown(object sender, EventArgs e)
         {
             this.WindowState = FormWindowState.Maximized;
             poker_add_page(Properties.Resources.PK_STR_HOMEPAGE);
@@ -422,11 +463,18 @@ namespace porker
         private void pk_browser_Navigated(object sender, WebBrowserNavigatedEventArgs e)
         {
             ExtendedWebBrowser pk_browser_current = sender as ExtendedWebBrowser;
+            TabPage pk_tab_parent;
 
             // if current browser is active
             if (pk_browser_current == pk_browser_front)
             {
                 update_front();
+            }
+
+            pk_tab_parent = (TabPage)pk_browser_current.Parent;
+            if (pk_tab_parent.ImageIndex != (int)EXEC_ICON.EXEC_IE)
+            {
+                pk_tab_parent.ImageIndex = (int)EXEC_ICON.EXEC_IE;
             }
 
             Program.log(Properties.Resources.PK_STR_LOG_NAV + pk_browser_current.Url.ToString());
@@ -502,11 +550,14 @@ namespace porker
         {
             if (pk_play == false)
             {
+                Program.log(Properties.Resources.PK_STR_LOG_PLAY);
                 pk_play = true;
+                this.pk_timer_play.Start();
             }
             else
             {
                 pk_play = false;
+                this.pk_timer_play.Stop();
             }
             this.pk_tool_btn_run.Checked = pk_play;
             set_status_busy(pk_play);
@@ -647,9 +698,29 @@ namespace porker
             this.pk_status_txt_time.Text = DateTime.Now.ToString("HH:mm:ss");
         }
 
-        private void frmMain_Load(object sender, EventArgs e)
+        private void pk_timer_play_Tick(object sender, EventArgs e)
         {
+            TabPage pk_tab_play;
+            ExtendedWebBrowser pk_browser_play;
+            int icon_exec_index;
 
+            // iterate all webbrowser
+            foreach (Control pk_control_play in this.pk_tab.Controls)
+            {
+                pk_tab_play = (TabPage)pk_control_play;
+                pk_browser_play = (ExtendedWebBrowser)pk_tab_play.Controls["ex"];
+
+                if ((pk_browser_play.ReadyState == WebBrowserReadyState.Complete) &&
+                    (pk_tab_play.ImageIndex != (int)EXEC_ICON.EXEC_GREY))
+                {
+                    icon_exec_index = web_helper.pkh_play(pk_browser_play);
+
+                    if (pk_tab_play.ImageIndex != icon_exec_index)
+                    {
+                        pk_tab_play.ImageIndex = icon_exec_index;
+                    }
+                }
+            }
         }
     }
 }

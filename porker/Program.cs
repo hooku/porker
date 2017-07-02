@@ -40,7 +40,7 @@ namespace porker
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern bool SetSystemTime(ref SYSTEMTIME st);
 
-        static frmMain frm_inst;
+        static frmBrowser frm_inst;
 
         /// <summary>
         /// The main entry point for the application.
@@ -71,7 +71,7 @@ namespace porker
             {
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
-                frm_inst = new frmMain();
+                frm_inst = new frmBrowser();
                 Application.Run(frm_inst);
             }
         }
