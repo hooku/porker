@@ -159,6 +159,7 @@ namespace porker
         private ToolStripButton pk_tool_btn_run;
         private ToolStripButton pk_tool_btn_config;
         private ToolStripSeparator pk_tool_sep3;
+        private ToolStripButton pk_tool_btn_help;
         private ToolStripButton pk_tool_btn_showlog;
         private ToolStripButton pk_tool_btn_updatetime;
         private ToolStripButton pk_tool_btn_updateapp;
@@ -210,6 +211,7 @@ namespace porker
             this.pk_tool_btn_run = new ToolStripButton();
             this.pk_tool_btn_config = new ToolStripButton();
             this.pk_tool_sep3 = new ToolStripSeparator();
+            this.pk_tool_btn_help = new ToolStripButton();
             this.pk_tool_btn_showlog = new ToolStripButton();
             this.pk_tool_btn_updatetime = new ToolStripButton();
             this.pk_tool_btn_updateapp = new ToolStripButton();
@@ -242,6 +244,10 @@ namespace porker
             this.pk_tool_btn_config.Text = Properties.Resources.PK_STR_CONFIG;
             this.pk_tool_btn_config.Click += new System.EventHandler(this.pk_tool_btn_config_Click);
 
+            this.pk_tool_btn_help.Image = Properties.Resources.PK_ICO_HELP_24.ToBitmap();
+            this.pk_tool_btn_help.Text = Properties.Resources.PK_STR_HELP;
+            this.pk_tool_btn_help.Click += new System.EventHandler(this.pk_tool_btn_showlog_Click);
+
             this.pk_tool_btn_showlog.Image = Properties.Resources.PK_ICO_LOG_24.ToBitmap();
             this.pk_tool_btn_showlog.Text = Properties.Resources.PK_STR_SHOWLOG;
             this.pk_tool_btn_showlog.Click += new System.EventHandler(this.pk_tool_btn_showlog_Click);
@@ -266,6 +272,7 @@ namespace porker
                 this.pk_tool_btn_run,
                 this.pk_tool_btn_config,
                 this.pk_tool_sep3,
+//                this.pk_tool_btn_help,
                 this.pk_tool_btn_showlog,
                 this.pk_tool_btn_updatetime,
                 this.pk_tool_btn_updateapp
@@ -437,12 +444,12 @@ namespace porker
 
         private void pk_tool_btn_updatetime_Click(object sender, EventArgs e)
         {
-            update_time_caller();
+            Program.update_time_caller();
         }
 
         private void pk_tool_btn_updateapp_Click(object sender, EventArgs e)
         {
-            update_app_caller();
+            Program.update_app_caller();
         }
 
         private void frmBrowser_Shown(object sender, EventArgs e)
@@ -486,6 +493,7 @@ namespace porker
 
             pk_browser_current.Parent.Text = pk_browser_current.Document.Title;
             this.web_helper.pkh_post_amend(pk_browser_current);
+            pk_browser_current.Document.Body.MouseDown += new HtmlElementEventHandler(pk_play_mousedown_hook);
         }
 
         private void wb_StatusTextChanged(object sender, EventArgs e)
@@ -594,80 +602,6 @@ namespace porker
             MessageBox.Show(Properties.Resources.PK_STR_CONFIGOK);
         }
 
-        private void update_app_caller()
-        {
-            // read the version file
-            using (var client = new WebClient())
-            {
-                string ver_str = "";
-                Version ver_new = null;
-                try
-                {
-                    ver_str = client.DownloadString(Properties.Resources.PK_STR_URL_UPDATE);
-                    ver_new = new Version(ver_str);
-                }
-                catch (Exception ex)
-                {
-
-                }
-
-                System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
-                FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
-                Version ver_current = new Version(fvi.FileVersion);
-
-                if (ver_new > ver_current)
-                {
-                    if (MessageBox.Show(Properties.Resources.PK_STR_UPDATEFOUND + ver_str, "", MessageBoxButtons.YesNo, MessageBoxIcon.Question) ==
-                        System.Windows.Forms.DialogResult.Yes)
-                    {
-                        // create a temp copy of application
-                        string tmp_file = Path.GetTempFileName() + ".exe";
-                        File.Copy(System.Reflection.Assembly.GetExecutingAssembly().Location, tmp_file, true);
-
-                        // call application with parameter
-                        ProcessStartInfo proc = new ProcessStartInfo();
-                        proc.FileName = tmp_file;
-                        proc.UseShellExecute = true;
-                        proc.Arguments = "update_app";
-
-                        try
-                        {
-                            Process.Start(proc);
-                        }
-                        catch (Exception ex)
-                        {
-
-                        }
-                    }
-                }
-                else
-                {
-                    MessageBox.Show(Properties.Resources.PK_STR_UPDATENOTFOUND, "", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-            }
-        }
-
-        private void update_time_caller()
-        {
-            ProcessStartInfo proc = new ProcessStartInfo();
-            proc.FileName = System.Reflection.Assembly.GetExecutingAssembly().Location;
-            proc.Arguments = "update_time";
-            proc.UseShellExecute = true;
-            if (System.Environment.OSVersion.Version.Major >= 6)
-            {
-                proc.Verb = "runas";    // require admin rights
-            }
-
-            try
-            {
-                Process.Start(proc);
-            }
-            catch (Exception ex)
-            {
-
-            }
-        }
-
         private void show_log(bool is_shown)
         {
             this.pk_lv_log.Visible = is_shown;
@@ -696,6 +630,11 @@ namespace porker
         private void timer_clock_cb(Object o)
         {
             this.pk_status_txt_time.Text = DateTime.Now.ToString("HH:mm:ss");
+        }
+
+        private void pk_play_mousedown_hook(Object sender, HtmlElementEventArgs e)
+        {
+            this.web_helper.pkh_post_amend(pk_browser_front);
         }
 
         private void pk_timer_play_Tick(object sender, EventArgs e)

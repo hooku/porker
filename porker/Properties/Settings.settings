@@ -12,13 +12,19 @@
       <Value Profile="(Default)">1000</Value>
     </Setting>
     <Setting Name="PK_LOGIN_AUTH_URL" Type="System.String" Scope="User">
-      <Value Profile="(Default)">http://54.223.123.174:8083/poker/auth/login</Value>
+      <Value Profile="(Default)">http://222.208.86.120:8084/poker/auth/login</Value>
     </Setting>
     <Setting Name="PK_WEB_TIMEOUT" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">2000</Value>
     </Setting>
     <Setting Name="PK_NTP_SERVER" Type="System.String" Scope="User">
       <Value Profile="(Default)">time.pool.aliyun.com</Value>
+    </Setting>
+    <Setting Name="PK_CODETEST" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">1</Value>
+    </Setting>
+    <Setting Name="PK_OCR_URL" Type="System.String" Scope="User">
+      <Value Profile="(Default)">http://cloud.emlab.net/p/dev/xxoo/?raw=1&amp;json=1</Value>
     </Setting>
   </Settings>
 </SettingsFile>

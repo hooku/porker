@@ -141,7 +141,7 @@ namespace porker
                            ((x & 0xff000000) >> 24));
         }
 
-        static void update_time()
+        private static void update_time()
         {
             DateTime ntp_time = GetNetworkTime();
             if (ntp_time.Year == 1900)
@@ -164,7 +164,7 @@ namespace porker
             }
         }
 
-        static void update_app()
+        private static void update_app()
         {
             string tmp_file = Path.GetTempFileName();
             string original_file;
@@ -209,6 +209,80 @@ namespace porker
             else
             {
                 MessageBox.Show(Properties.Resources.PK_STR_UPDATEERR);
+            }
+        }
+
+        public static void update_time_caller()
+        {
+            ProcessStartInfo proc = new ProcessStartInfo();
+            proc.FileName = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            proc.Arguments = "update_time";
+            proc.UseShellExecute = true;
+            if (System.Environment.OSVersion.Version.Major >= 6)
+            {
+                proc.Verb = "runas";    // require admin rights
+            }
+
+            try
+            {
+                Process.Start(proc);
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+
+        public static void update_app_caller(bool prompt_update_not_found = true)
+        {
+            // read the version file
+            using (var client = new WebClient())
+            {
+                string ver_str = "";
+                Version ver_new = null;
+                try
+                {
+                    ver_str = client.DownloadString(Properties.Resources.PK_STR_URL_UPDATE);
+                    ver_new = new Version(ver_str);
+                }
+                catch (Exception ex)
+                {
+
+                }
+
+                System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
+                FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
+                Version ver_current = new Version(fvi.FileVersion);
+
+                if (ver_new > ver_current)
+                {
+                    if (MessageBox.Show(Properties.Resources.PK_STR_UPDATEFOUND + ver_str, "", MessageBoxButtons.YesNo, MessageBoxIcon.Question) ==
+                        System.Windows.Forms.DialogResult.Yes)
+                    {
+                        // create a temp copy of application
+                        string tmp_file = Path.GetTempFileName() + ".exe";
+                        File.Copy(System.Reflection.Assembly.GetExecutingAssembly().Location, tmp_file, true);
+
+                        // call application with parameter
+                        ProcessStartInfo proc = new ProcessStartInfo();
+                        proc.FileName = tmp_file;
+                        proc.UseShellExecute = true;
+                        proc.Arguments = "update_app";
+
+                        try
+                        {
+                            Process.Start(proc);
+                        }
+                        catch (Exception ex)
+                        {
+
+                        }
+                    }
+                }
+                else if (prompt_update_not_found)
+                {
+                    MessageBox.Show(Properties.Resources.PK_STR_UPDATENOTFOUND, "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
             }
         }
 

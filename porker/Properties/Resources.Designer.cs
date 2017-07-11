@@ -153,6 +153,16 @@ namespace porker.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
+        internal static System.Drawing.Icon PK_ICO_HELP_24 {
+            get {
+                object obj = ResourceManager.GetObject("PK_ICO_HELP_24", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
         internal static System.Drawing.Icon PK_ICO_IEPAGE_16 {
             get {
                 object obj = ResourceManager.GetObject("PK_ICO_IEPAGE_16", resourceCulture);
@@ -312,6 +322,15 @@ namespace porker.Properties {
         internal static string PK_STR_CONFIGOK {
             get {
                 return ResourceManager.GetString("PK_STR_CONFIGOK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 使用说明.
+        /// </summary>
+        internal static string PK_STR_HELP {
+            get {
+                return ResourceManager.GetString("PK_STR_HELP", resourceCulture);
             }
         }
         

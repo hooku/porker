@@ -12,7 +12,7 @@ namespace porker.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "10.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "12.0.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -61,7 +61,7 @@ namespace porker.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://54.223.123.174:8083/poker/auth/login")]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://222.208.86.120:8084/poker/auth/login")]
         public string PK_LOGIN_AUTH_URL {
             get {
                 return ((string)(this["PK_LOGIN_AUTH_URL"]));
@@ -92,6 +92,30 @@ namespace porker.Properties {
             }
             set {
                 this["PK_NTP_SERVER"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int PK_CODETEST {
+            get {
+                return ((int)(this["PK_CODETEST"]));
+            }
+            set {
+                this["PK_CODETEST"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://cloud.emlab.net/p/dev/xxoo/?raw=1&json=1")]
+        public string PK_OCR_URL {
+            get {
+                return ((string)(this["PK_OCR_URL"]));
+            }
+            set {
+                this["PK_OCR_URL"] = value;
             }
         }
     }

@@ -110,5 +110,10 @@ namespace porker
 
             return auth_result;
         }
+
+        private void frmLogin_Shown(object sender, EventArgs e)
+        {
+            Program.update_app_caller(false);
+        }
     }
 }
