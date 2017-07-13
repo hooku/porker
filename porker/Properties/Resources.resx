@@ -277,4 +277,7 @@
   <data name="PK_STR_HELP" xml:space="preserve">
     <value>使用说明</value>
   </data>
+  <data name="PK_STR_EXCEPTION" xml:space="preserve">
+    <value>未处理的异常</value>
+  </data>
 </root>

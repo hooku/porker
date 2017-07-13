@@ -326,6 +326,15 @@ namespace porker.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 未处理的异常.
+        /// </summary>
+        internal static string PK_STR_EXCEPTION {
+            get {
+                return ResourceManager.GetString("PK_STR_EXCEPTION", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 使用说明.
         /// </summary>
         internal static string PK_STR_HELP {

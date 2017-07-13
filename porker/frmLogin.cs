@@ -97,7 +97,7 @@ namespace porker
             }
             catch (Exception ex)
             {
-                MessageBox.Show(Properties.Resources.PK_STR_LOGIN_SERVERERR, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(Properties.Resources.PK_STR_LOGIN_SERVERERR, ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             if (response_str != "")

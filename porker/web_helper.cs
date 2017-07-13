@@ -132,7 +132,7 @@ namespace porker
                     }
                     catch (Exception ex)
                     {
-                        Program.log(ex.ToString());
+                        Program.log(ex.Message);
                     }
                 }
             }
@@ -157,7 +157,7 @@ namespace porker
             }
             catch (Exception ex)
             {
-                Program.log(ex.ToString());
+                Program.log(ex.Message);
             }
 
             return result;
@@ -265,7 +265,7 @@ namespace porker
             }
             catch (Exception ex)
             {
-                Program.log(ex.ToString());
+                Program.log(ex.Message);
             }
 
             return icon_exec_index;

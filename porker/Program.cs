@@ -48,6 +48,8 @@ namespace porker
         [STAThread]
         static void Main(string[] args)
         {
+            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+
 #if false
             update_time();
 #endif
@@ -74,6 +76,12 @@ namespace porker
                 frm_inst = new frmBrowser();
                 Application.Run(frm_inst);
             }
+        }
+
+        static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            MessageBox.Show(e.ToString(), Properties.Resources.PK_STR_EXCEPTION + " " + e.IsTerminating.ToString(),
+                MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         // stackoverflow.com/questions/1193955
@@ -167,7 +175,7 @@ namespace porker
         private static void update_app()
         {
             string tmp_file = Path.GetTempFileName();
-            string original_file;
+            string original_file = "";
 
             FileVersionInfo porker_ver_info = FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetEntryAssembly().Location);
 
@@ -179,21 +187,42 @@ namespace porker
                     client.DownloadFile(Properties.Resources.PK_STR_URL_UPDATE + porker_ver_info.OriginalFilename, tmp_file);
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                MessageBox.Show(Properties.Resources.PK_STR_UPDATEERR);
+                MessageBox.Show(ex.Message, Properties.Resources.PK_STR_UPDATEERR, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return ;
             }
 
             // find process path
-            Process[] pname = Process.GetProcessesByName(porker_ver_info.ProductName);
-            if (pname.Length > 0)
-            {
-                original_file = pname[0].MainModule.FileName;
+            Process pk_pname = null;
 
+            Process[] pnames = Process.GetProcesses();   //Process.GetProcessesByName(porker_ver_info.ProductName);
+            foreach (Process pname in pnames)
+            {
+                try
+                {
+                    FileVersionInfo process_ver_info = FileVersionInfo.GetVersionInfo(pname.MainModule.FileName);
+
+                    string p_file = pname.MainModule.FileName;
+
+                    if ((process_ver_info.ProductName == porker_ver_info.ProductName) &&
+                        (p_file != System.Reflection.Assembly.GetEntryAssembly().Location))
+                    {
+                        original_file = p_file;
+                        pk_pname = pname;
+                        break;
+                    }
+                }
+                catch  (Exception ex)
+                {
+                }
+            }
+
+            if (original_file.Length > 0)
+            {
                 // kill process
-                pname[0].Kill();
-                pname[0].WaitForExit();
+                pk_pname.Kill();
+                pk_pname.WaitForExit();
 
                 // remove old file
                 File.Delete(original_file);
