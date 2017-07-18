@@ -344,11 +344,11 @@ namespace porker.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to http://zhongbao.10085.cn:18080/.
+        ///   Looks up a localized string similar to cloud.emlab.net.
         /// </summary>
-        internal static string PK_STR_HOMEPAGE {
+        internal static string PK_STR_HIDE_URL {
             get {
-                return ResourceManager.GetString("PK_STR_HOMEPAGE", resourceCulture);
+                return ResourceManager.GetString("PK_STR_HIDE_URL", resourceCulture);
             }
         }
         
@@ -556,15 +556,6 @@ namespace porker.Properties {
         internal static string PK_STR_UPDATETIME {
             get {
                 return ResourceManager.GetString("PK_STR_UPDATETIME", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to http://cloud.emlab.net/p/pk/.
-        /// </summary>
-        internal static string PK_STR_URL_UPDATE {
-            get {
-                return ResourceManager.GetString("PK_STR_URL_UPDATE", resourceCulture);
             }
         }
     }

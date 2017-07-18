@@ -26,5 +26,14 @@
     <Setting Name="PK_OCR_URL" Type="System.String" Scope="User">
       <Value Profile="(Default)">http://cloud.emlab.net/p/dev/xxoo/?raw=1&amp;json=1</Value>
     </Setting>
+    <Setting Name="PK_HOMEPAGE" Type="System.String" Scope="User">
+      <Value Profile="(Default)">http://zhongbao.10085.cn:18080/</Value>
+    </Setting>
+    <Setting Name="PK_URL_UPDATE" Type="System.String" Scope="User">
+      <Value Profile="(Default)">http://cloud.emlab.net/p/pk/</Value>
+    </Setting>
+    <Setting Name="PK_URL_HELP" Type="System.String" Scope="User">
+      <Value Profile="(Default)">http://cloud.emlab.net/p/pk/help/index.htm</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

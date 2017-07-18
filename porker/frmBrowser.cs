@@ -246,7 +246,7 @@ namespace porker
 
             this.pk_tool_btn_help.Image = Properties.Resources.PK_ICO_HELP_24.ToBitmap();
             this.pk_tool_btn_help.Text = Properties.Resources.PK_STR_HELP;
-            this.pk_tool_btn_help.Click += new System.EventHandler(this.pk_tool_btn_showlog_Click);
+            this.pk_tool_btn_help.Click += new System.EventHandler(this.pk_tool_btn_help_Click);
 
             this.pk_tool_btn_showlog.Image = Properties.Resources.PK_ICO_LOG_24.ToBitmap();
             this.pk_tool_btn_showlog.Text = Properties.Resources.PK_STR_SHOWLOG;
@@ -272,7 +272,7 @@ namespace porker
                 this.pk_tool_btn_run,
                 this.pk_tool_btn_config,
                 this.pk_tool_sep3,
-//                this.pk_tool_btn_help,
+                this.pk_tool_btn_help,
                 this.pk_tool_btn_showlog,
                 this.pk_tool_btn_updatetime,
                 this.pk_tool_btn_updateapp
@@ -364,12 +364,12 @@ namespace porker
             TabPage ex_tab = new TabPage();
             ex_tab.Text = "Loading..";
             ex_tab.ImageIndex = 0;
-            //            ex_tab.Click += new System.EventHandler(this.pk_tabpage_Click);
 
             ExtendedWebBrowser ex_browser = new ExtendedWebBrowser();
             ex_browser.Name = "ex";
             ex_browser.Parent = ex_tab;
             ex_browser.Dock = DockStyle.Fill;
+            ex_browser.ScriptErrorsSuppressed = true;
             ex_browser.Navigated += new System.Windows.Forms.WebBrowserNavigatedEventHandler(this.pk_browser_Navigated);
             ex_browser.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.pk_browser_DocumentCompleted);
             ex_browser.NewWindow2 += new EventHandler<NewWindow2EventArgs>(pk_browser_NewWindow2);
@@ -436,6 +436,11 @@ namespace porker
             edit_config();
         }
 
+        private void pk_tool_btn_help_Click(object sender, EventArgs e)
+        {
+            this.pk_browser_front.Navigate(Properties.Settings.Default.PK_URL_HELP);
+        }
+
         private void pk_tool_btn_showlog_Click(object sender, EventArgs e)
         {
             show_log(!this.pk_tool_btn_showlog.Checked);
@@ -455,13 +460,8 @@ namespace porker
         private void frmBrowser_Shown(object sender, EventArgs e)
         {
             this.WindowState = FormWindowState.Maximized;
-            poker_add_page(Properties.Resources.PK_STR_HOMEPAGE);
+            poker_add_page(Properties.Settings.Default.PK_HOMEPAGE);
             update_front();
-
-#if false
-            // debug for company
-            this.pk_browser_front.Navigate("http://127.0.0.1/p/fsl-securityvalidation.html");
-#endif
 
             frmLogin frm_login = new frmLogin();
             frm_login.ShowDialog(this);
@@ -528,6 +528,8 @@ namespace porker
 
         private void update_front()
         {
+            string url = "";
+
             pk_browser_front = (ExtendedWebBrowser)this.pk_tab.SelectedTab.Controls["ex"];
             this.pk_tool_btn_back.Enabled = pk_browser_front.CanGoBack;
             this.pk_tool_btn_forward.Enabled = pk_browser_front.CanGoForward;
@@ -536,7 +538,11 @@ namespace porker
 
             if (pk_browser_front.Url != null)
             {
-                this.pk_tool_txt_url.Text = pk_browser_front.Url.ToString();
+                if (!pk_browser_front.Url.ToString().Contains(Properties.Resources.PK_STR_HIDE_URL))
+                {
+                    url = pk_browser_front.Url.ToString();
+                }
+                this.pk_tool_txt_url.Text = url;
             }
         }
 

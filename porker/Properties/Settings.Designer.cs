@@ -118,5 +118,41 @@ namespace porker.Properties {
                 this["PK_OCR_URL"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://zhongbao.10085.cn:18080/")]
+        public string PK_HOMEPAGE {
+            get {
+                return ((string)(this["PK_HOMEPAGE"]));
+            }
+            set {
+                this["PK_HOMEPAGE"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://cloud.emlab.net/p/pk/")]
+        public string PK_URL_UPDATE {
+            get {
+                return ((string)(this["PK_URL_UPDATE"]));
+            }
+            set {
+                this["PK_URL_UPDATE"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://cloud.emlab.net/p/pk/help/index.htm")]
+        public string PK_URL_HELP {
+            get {
+                return ((string)(this["PK_URL_HELP"]));
+            }
+            set {
+                this["PK_URL_HELP"] = value;
+            }
+        }
     }
 }

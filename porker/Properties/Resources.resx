@@ -126,9 +126,6 @@
   <data name="PK_STR_RUN" xml:space="preserve">
     <value>开始自动抢单</value>
   </data>
-  <data name="PK_STR_URL_UPDATE" xml:space="preserve">
-    <value>http://cloud.emlab.net/p/pk/</value>
-  </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="PK_ICO_APP" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ie.ico;System.Drawing.Icon, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -205,9 +202,6 @@
   <data name="PK_STR_BACK" xml:space="preserve">
     <value>后退</value>
   </data>
-  <data name="PK_STR_HOMEPAGE" xml:space="preserve">
-    <value>http://zhongbao.10085.cn:18080/</value>
-  </data>
   <data name="PK_STR_SHOWLOG" xml:space="preserve">
     <value>显示日志</value>
   </data>
@@ -279,5 +273,8 @@
   </data>
   <data name="PK_STR_EXCEPTION" xml:space="preserve">
     <value>未处理的异常</value>
+  </data>
+  <data name="PK_STR_HIDE_URL" xml:space="preserve">
+    <value>cloud.emlab.net</value>
   </data>
 </root>

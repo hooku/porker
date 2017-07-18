@@ -184,7 +184,7 @@ namespace porker
                 using (var client = new WebClient())
                 {
                     // download latest file
-                    client.DownloadFile(Properties.Resources.PK_STR_URL_UPDATE + porker_ver_info.OriginalFilename, tmp_file);
+                    client.DownloadFile(Properties.Settings.Default.PK_URL_UPDATE + porker_ver_info.OriginalFilename, tmp_file);
                 }
             }
             catch (Exception ex)
@@ -271,7 +271,7 @@ namespace porker
                 Version ver_new = null;
                 try
                 {
-                    ver_str = client.DownloadString(Properties.Resources.PK_STR_URL_UPDATE);
+                    ver_str = client.DownloadString(Properties.Settings.Default.PK_URL_UPDATE);
                     ver_new = new Version(ver_str);
                 }
                 catch (Exception ex)

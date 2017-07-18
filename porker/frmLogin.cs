@@ -46,19 +46,22 @@ namespace porker
 
         private void pk_btn_login_Click(object sender, EventArgs e)
         {
+#if ENABLE_LOGIN_AUTH
+            login_success = login_auth(this.pk_txt_user.Text, this.pk_txt_pass.Text);
+#else
             if (this.pk_txt_user.Text == Properties.Settings.Default.PK_DEFAULT_USER &&
                 this.pk_txt_pass.Text == Properties.Settings.Default.PK_DEFAULT_PASS)
             {
-
-#if ENABLE_LOGIN_AUTH
-                login_success = login_auth(this.pk_txt_user.Text, this.pk_txt_pass.Text);
-#else
+                login_success = true;
+            }
+#endif
+            if (login_success)
+            {
                 // simple check
                 Properties.Settings.Default.PK_DEFAULT_USER = this.pk_txt_user.Text;
                 Properties.Settings.Default.PK_DEFAULT_PASS = this.pk_txt_pass.Text;
                 Properties.Settings.Default.Save();
-                login_success = true;
-#endif
+
                 this.Close();
             }
             else
@@ -76,7 +79,7 @@ namespace porker
 
             var request = (HttpWebRequest)WebRequest.Create(Properties.Settings.Default.PK_LOGIN_AUTH_URL);
 
-            var post_data = "account=" + user + "&password=" + pass;
+            var post_data = "account=" + Uri.EscapeUriString(user) + "&password=" + Uri.EscapeUriString(pass);
             var data = Encoding.ASCII.GetBytes(post_data);
 
             request.Method = "POST";
