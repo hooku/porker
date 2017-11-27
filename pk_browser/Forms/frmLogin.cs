@@ -1,4 +1,4 @@
-﻿#define ENABLE_LOGIN_AUTH
+﻿//#define ENABLE_LOGIN_AUTH
 
 using System;
 using System.Collections.Generic;

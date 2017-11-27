@@ -13,7 +13,7 @@ using System.Text.RegularExpressions;
 
 namespace porker
 {
-    class WebHelper
+    class clsWebHelper
     {
         [DllImport("urlmon.dll", CharSet = CharSet.Auto, SetLastError = true)]
         static extern Int32 URLDownloadToCacheFile(
