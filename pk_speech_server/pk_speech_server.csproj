@@ -44,7 +44,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\clsEngineMS.cs" />
-    <Compile Include="Classes\clsServer.cs" />
+    <Compile Include="Classes\clsSpeechServer.cs" />
+    <Compile Include="Classes\clsSocket.cs" />
     <Compile Include="ServiceWrapper.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -55,8 +56,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Data\audio_test.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Data\speech_gramma.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

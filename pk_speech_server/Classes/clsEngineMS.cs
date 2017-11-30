@@ -8,10 +8,8 @@ using System.IO;
 
 namespace pk_speech_server
 {
-    class clsEngineMS
+    class clsEngineMS : clsEngine
     {
-        private const bool DEBUG_ENG_MS = true; // enable this option to record from mic directly
-        private const string DEBUG_ENG_MS_GRAMMA_FILE = "data\\speech_gramma.txt";
         /* 
          * Gramma Syntax Example:
          * MS_CHOICE: (one short sentence per line)
@@ -19,8 +17,9 @@ namespace pk_speech_server
          *  你好
          *  详细介绍一下
          */
-
+        private const bool ENG_MS_USE_FILE = true;
         private const string ENG_MS_CULTURE = "zh-CN";
+        private const int ENG_MS_SLIENCE_TIMEOUT = 1;   // sec
 
         enum MS_GRAMMA
         {
@@ -30,15 +29,16 @@ namespace pk_speech_server
         };
 
         SpeechRecognitionEngine g_engine = null;
+        ENGINE_MODE g_mode = ENGINE_MODE.ENG_MIC_DEBUG;
 
-        public clsEngineMS()
+        public clsEngineMS(ENGINE_MODE mode, string gramma_file_path)
         {
             try
             {
-                string gramma_file_path = Path.Combine(Directory.GetCurrentDirectory(), DEBUG_ENG_MS_GRAMMA_FILE);
-
                 // create the engine
                 g_engine = engine_ms_create(ENG_MS_CULTURE);
+
+                g_mode = mode;
 
                 // hook to events
                 g_engine.AudioLevelUpdated += new EventHandler<AudioLevelUpdatedEventArgs>(engine_ms_audiolevel_updated);
@@ -53,20 +53,41 @@ namespace pk_speech_server
                 {
                     Program.log("Gramma file not exist", ERR_LEVEL.ERR_FATAL);
                 }
-
-                if (DEBUG_ENG_MS)
-                {
-                    // use the system's default microphone
-                    g_engine.SetInputToDefaultAudioDevice();
-
-                    // start listening
-                    g_engine.RecognizeAsync(RecognizeMode.Multiple);
-                }
             }
             catch (Exception ex)
             {
                 Program.log(ex.Message, ERR_LEVEL.ERR_WARN);
             }
+        }
+
+        public override string do_recog(string wave_file)
+        {
+            string result = "";
+
+            switch (g_mode)
+            {
+                case ENGINE_MODE.ENG_STREAM_INPUT:
+                    if (ENG_MS_USE_FILE)
+                    {
+                        g_engine.SetInputToWaveFile(wave_file);
+                        g_engine.EndSilenceTimeout = new TimeSpan(0, 0, ENG_MS_SLIENCE_TIMEOUT);
+                        g_engine.Recognize();
+                    }
+                    else 
+                    {
+                        // we use audio stream as the input
+                        //g_engine.SetInputToAudioStream();
+                    }
+                    break;
+                case ENGINE_MODE.ENG_MIC_DEBUG:
+                default:
+                    // use the system's default microphone
+                    g_engine.SetInputToDefaultAudioDevice();
+                    g_engine.RecognizeAsync(RecognizeMode.Multiple);
+                    break;
+            }
+
+            return result;
         }
 
         private SpeechRecognitionEngine engine_ms_create(string preferredCulture)
@@ -129,7 +150,7 @@ namespace pk_speech_server
 
         private void engine_ms_speech_recognized(object sender, SpeechRecognizedEventArgs e)
         {
-            Program.log(e.Result.Text);
+            Program.log("Result=" + e.Result.Text);
         }
     }
 }

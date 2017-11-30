@@ -26,7 +26,7 @@ namespace pk_speech_server
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
-        static void Main()
+        static void Main(string[] args)
         {
             if (!Environment.UserInteractive)
             {
@@ -42,10 +42,20 @@ namespace pk_speech_server
             {
                 // Startup as application
                 AllocConsole();
-                clsServer server = new clsServer();
+                clsSpeechServer server = new clsSpeechServer(args);
 
+#if DEBUG
                 Console.ReadKey();
+#endif
             }
+        }
+
+        public static void help()
+        {
+            Console.ForegroundColor = ConsoleColor.Gray;
+            Console.Write(
+                "pk_speech_server [gramma_file] [wave_file]\r\n"
+                );
         }
 
         public static void log(string txt, ERR_LEVEL err_level = ERR_LEVEL.ERR_INFO)
